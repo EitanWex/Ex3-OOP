@@ -2,5 +2,5 @@
 ## Description
 Ex3
 
-## Athors
+## Authors
 Eitan Wechsler
