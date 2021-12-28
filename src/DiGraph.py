@@ -1,78 +1,63 @@
-from hashlib import new
-
 from src.GraphInterface import GraphInterface
-
-from GRF_Node import GRF_Node
+from src.Node import Node
 
 
 class DiGraph(GraphInterface):
 
     def __init__(self):
-        self.Vertices = {}           #קודקודי הגרף
-        self.num_of_ver = 0
-        self.num_of_edges = 0
-        self.mc_count= 0        #the count for number of operations performed
-
-
+        self.Nodes= {}
+        self.Edges= {}
+        self.mc = 0
 
     def v_size(self) -> int:
-       return self.num_of_ver
+        return self.Nodes.__len__()
 
     def e_size(self) -> int:
-        return self.num_of_edges
+        sum=0
+        for key, v in self.Edges.items():
+            sum = sum + len(v)
+        return sum
 
     def get_mc(self) -> int:
-        return self.mc_count
+        return self.mc
 
     def add_edge(self, id1: int, id2: int, weight: float) -> bool:
-        if self.Vertices.get(id1) is None or self.Vertices.get(id2) is None or weight <= 0 or id1 == id2:
-            return False
-
-        self.Vertices.get(id1).edge_O[id2] = weight
-        self.Vertices.get(id2).edge_IN[id1] = weight
-        self.num_of_edges += 1
-        self.mc_count += 1
-        return True
-
+         if id1 in self.Nodes.keys() and id2 in self.Nodes.keys():
+            self.Edges[id1][id2]=weight
+            self.mc = self.mc + 1
+            return True
+         else: return False
 
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
-        if self.Vertices.get(node_id) is None:
-            return False
-        self.Vertices[node_id] = GRF_Node(node_id, pos)
-        self.num_of_ver += 1
-        self.mc_count += 1       #number of operations performed on the graph
-        return True
+            self.Nodes[node_id]=Node(node_id,pos)
+            self.Edges[node_id]={}
+            self.mc=self.mc+1
+            return True
 
     def remove_node(self, node_id: int) -> bool:
-      if self.Vertices.get(node_id) is not None:
-          for k in self.Vertices.get(node_id).edge_O.keys():
-              self.Vertices.get(node_id).edge_O.pop(node_id)
-              self.num_of_edges -= 1
-              self.num_of_ver -= 1
-          for m in self.Vertices.get(node_id).edge_IN.pop(node_id):
-              self.Vertices.get(node_id).edge_IN.pop(node_id)
-              self.num_of_edges -= 1
-              self.num_of_ver -= 1
-          self.mc_count += 1
-          self.Vertices.pop(node_id)
-          return True
-      return False
+        if self.Nodes[node_id]!=None:
+            del self.Nodes[node_id]
+            del self.Edges[node_id]
+            listToRemove=[]
+            for src, dest in self.Edges.items():
+                for key in dest.keys():
+                    if key==node_id:
+                        listToRemove.append((src,key))
 
+            for t in listToRemove:
+                self.remove_edge(t[0],t[1])
 
-
-
-
-
+            self.mc = self.mc + 1
+            return True
+        else: return False
 
 
     def remove_edge(self, node_id1: int, node_id2: int) -> bool:
-        if self.vertices.get(node_id1) is not None and self.Vertices.get(node_id2) is not None:
-            if self.Vertices.get(node_id1).edge_O is not None:
-                self.Vertices.get(node_id1).edge_O.pop(node_id1)
-                self.Vertices.get(node_id2).edge_IN.pop(node_id2)
-                self.num_of_edges -= 1
-                self.mc_count += 1
-                return True
+        if self.Edges[node_id1][node_id2]!=None:
+            del self.Edges[node_id1][node_id2]
+            self.mc = self.mc + 1
+            return True
+        else: return False
 
-        return False
-
+    def __str__(self):
+        return f"Nodes:{self.Nodes}\nEdges:{self.Edges}"

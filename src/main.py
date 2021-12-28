@@ -1,6 +1,6 @@
-from src.DiGraph import DiGraph
-from src.GraphAlgo import GraphAlgo
-
+from DiGraph import DiGraph
+from GraphAlgo import GraphAlgo
+import random
 
 def check():
     """
@@ -37,7 +37,10 @@ def check0():
     g.add_edge(2, 3, 1.1)
     g.add_edge(1, 3, 1.9)
     g.remove_edge(1, 3)
-    g.add_edge(1, 3, 10)
+    print(g)
+    print("------------")
+    g.remove_node(0)
+    # g.add_edge(1, 3, 10)
     print(g)  # prints the __repr__ (func output)
     print(g.get_all_v())  # prints a dict with all the graph's vertices.
     print(g.all_in_edges_of_node(1))
@@ -55,6 +58,7 @@ def check1():
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
     file = "../data/T0.json"
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
+    print(g_algo.graph)
     print(g_algo.shortest_path(0, 3))
     print(g_algo.shortest_path(3, 1))
     print(g_algo.centerPoint())
@@ -105,4 +109,4 @@ def check3():
 
 
 if __name__ == '__main__':
-    check()
+    check2()
